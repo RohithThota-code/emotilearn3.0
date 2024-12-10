@@ -112,13 +112,13 @@ const getProfile =(req,res)=>{
 
 const {token} =req.cookies
 if(token){
-    jwt.verify(token,process.env.JWT_SECRET,{},(err,user)=>{
+    jwt.verify(token,process.env.JWT_SECRET,{},(err,child)=>{
         if(err) throw err;
-        console.log(user)
-        res.json(user)
+        console.log(child)
+        res.json(child)
     })
 }else{
-    console.log(user)
+    console.log(child)
     res.json(null)
 }
 };
