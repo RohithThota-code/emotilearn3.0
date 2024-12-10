@@ -11,6 +11,15 @@ import AdminLogin from './AdminLogin'; // Admin login
 import LandingPage from './LandingPage'; // Landing page
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/App.css';
+import ChildRegister from './Register';
+import { Toaster } from 'react-hot-toast';
+import axios from 'axios';
+
+
+axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.withCredentials = true;
+
+
 
 function App() {
   // States for managing application data
@@ -108,6 +117,8 @@ function App() {
       <div className="app">
         {/* Conditionally render Navbar */}
         {gameStage === 'start' && <Navbar />} {/* Navbar is visible only when gameStage is 'start' */}
+        <Toaster position="center" toastOptions={{ duration: 3000 }} />
+        
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/child-login" element={<ChildLogin onStartQuiz={handleStartQuiz} />} />
@@ -117,6 +128,7 @@ function App() {
           <Route path="/animal-game" element={renderAnimalGame()} />
           <Route path="/memory-game" element={renderMemoryGame()} />
           <Route path="/report" element={<Report allSessions={allSessions} />} />
+          <Route path="/child-register" element={<ChildRegister onStartQuiz={handleStartQuiz} />} />
         </Routes>
       </div>
     </Router>

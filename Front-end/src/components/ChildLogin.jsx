@@ -2,37 +2,38 @@ import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import "../styles/ChildLogin.css";
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 const ChildLogin = ({ onStartQuiz }) => {
   const navigate = useNavigate();
-  const [childName, setChildName] = useState('');
+  const [data, setData] = useState({ 
+    childname: '',
+    password: '',
+});
 
-  const handlePlayGame = async (e) => {
+  const loginChild = async (e) => {
     e.preventDefault();
-    if (childName.trim() !== '') {
-      const sessionId = uuidv4().replace(/-/g, '').slice(0, 10); // Generate and slice UUID to 10 characters
+    console.log(data);
+    const { childname, password } = data;
+    if (childname.trim() !== '') {
+      
       try {
-        const response = await fetch('http://localhost:3000/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            childName,
-            sessionId,
-          }),
-        });
+        const response = await axios.post('/login', { childname, password });
+        const { error, sessionId } = response.data;
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('Session started successfully:', data);
-        onStartQuiz(childName, sessionId); // Call the onStartQuiz function after successful API call
-        navigate('/quiz');
+        if (error) {
+            toast.error(error);
+        }else {
+          setData({ childname: '', password: '' });
+          console.log('Session started successfully:', sessionId);
+          onStartQuiz(childname, sessionId);
+          navigate('/quiz');
+          
+      }
       } catch (error) {
-        console.error('Failed to start session:', error);
+        console.error(error);
+        toast.error('An error occurred while logging in.');
       }
     }
   };
@@ -40,16 +41,21 @@ const ChildLogin = ({ onStartQuiz }) => {
   return (
     <div className="start-screen">
       <h1>Child Login</h1>
-      <form onSubmit={handlePlayGame}>
+      <form onSubmit={loginChild}>
         <label htmlFor="childName">Enter child name:</label>
         <input
           type="text"
-          id="childName"
-          name="childName"
-          value={childName}
-          onChange={(e) => setChildName(e.target.value)}
-          required
+          placeholder="Enter name"
+          value={data.childname} 
+          onChange={(e) => setData({ ...data, childname: e.target.value })} 
         />
+        <label>Password</label>
+          <input
+            type="password"
+            placeholder="Enter password"
+            value={data.password} 
+            onChange={(e) => setData({ ...data, password: e.target.value })} 
+          />
         <br />
         <button type="submit" className="submit-button">Submit</button>
       </form>
@@ -58,3 +64,6 @@ const ChildLogin = ({ onStartQuiz }) => {
 };
 
 export default ChildLogin;
+
+
+

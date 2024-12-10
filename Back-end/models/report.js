@@ -3,13 +3,20 @@ const mongoose = require('mongoose');
 const reportSchema = new mongoose.Schema({
     childname: {
         type: String,
-        required: true
     },
-    sessionid: {
+    password:{
         type: String,
-        required: true,
-        index: true // Optimizes query performance
     },
+    sessions: [{
+        sessionId: String,
+        loginTime: Date,
+        logoutTime: Date,
+    }],
+    // sessionid: {
+    //     type: String,
+    //     required: true,
+    //     index: true // Optimizes query performance
+    // },
     sessiondate: {
         type: Date,
         required: true,
